@@ -1,5 +1,5 @@
 /* --------------------  rexx procedure  -------------------- */
-ver = "1.1"
+ver = "1.2"
 /* Name:      txt2csv                                         *
  *                                                            *
  * Function:  program to convert a text file to csv format    *
@@ -38,6 +38,7 @@ ver = "1.1"
  *            E-Mail: lbdyck@gmail.com                        *
  *                                                            *
  * History:                                                   *
+ *            06/27/20 - v1.2 correction for z/VM xedit       *
  *            06/27/20 - v1.1 add Browse/View option          *
  *            03/14/17 - v1.0 Change to 1.0                   *
  *                     - if z/OS and ISPF and no parms then   *
@@ -307,7 +308,9 @@ ver = "1.1"
          if ispf = 1 then
            Address ISPExec brview 'Dataset('output')'
          if os = 'CMS' then
-         'pipe <' output '| browse'
+         if brview = 'BROWSE'
+            then 'pipe <' ofn oft ofm '| browse'
+            else 'xedit'  ofn oft ofm
     end
 
 Exit 0

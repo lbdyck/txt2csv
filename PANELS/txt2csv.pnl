@@ -45,10 +45,24 @@
     zedlmsg = 'Input dataset error:' sysdsn(zin)
     csr = 'ZIN'
   end
-  if sysdsn(zout) = 'OK' then do
-    zedlmsg = 'Output dataset exists and must not. Specify a new' ,
-      'dataset name that does not exist.'
-    csr = 'ZOUT'
+
+  if zedlmsg = null then do
+    x = listdsi(zin)
+    if sysdsorg = 'PO' then do
+      if pos('(',zin) = 0 then do
+        zedlmsg = 'The Input dataset is a PDS and must have a member' ,
+          'name provided.'
+        csr = 'ZIN'
+      end
+    end
+  end
+
+  if zedlmsg = null then do
+    if sysdsn(zout) = 'OK' then do
+      zedlmsg = 'Output dataset exists and must not. Specify a new' ,
+        'dataset name that does not exist.'
+      csr = 'ZOUT'
+    end
   end
   if zedlmsg = null then do
     if zchar /= null
