@@ -1,0 +1,67 @@
+)ATTR DEFAULT(%+_)
+/* --------------------------------- */
+/* Panel courtesy of Philippe Lognot */
+/* --------------------------------- */
+ _ TYPE(INPUT) JUST(ASIS) hilite(uscore)
+ @ TYPE(TEXT) COLOR(TURQ) INTENS(LOW)
+ $ TYPE(Output) INTENS(High)
+)BODY EXPAND(!!)
+%!-! TexT-to-CSV $ver  %!-!
+%Command ===>_Zcmd
++
+%Input DSN  :_Zin                                         +
+@Dataset or PDS(member)                      -> Ex.:%&ZUSER..TABLE
+
+%Output DSN :_Zout                                        %View:_z@(B,V,N)
+@Dataset : will be created (must not exist)  -> Ex.:%&ZUSER..TABLE.CSV
+%CSV Character: _z+    @May be any character - default is ,
+
+%Position of columns :_Zc
+@Preceded by "-" to ignore column
+@Example :%1 11 -21 31 -41
+
+%&ZUSER..TABLE
+@ ----+----1----+----2----+----3----+----4
+  01234567  abcdefgh  ijklmnop  qrstuvwx
+  0123      abcd      ij  mn    qr  uv
+%&ZUSER..TABLE.CSV
+@ 01234567,abcdefgh,qrstuvwx,
+  0123,abcd,"qr  uv",
+
+%Note:@If a column contains spaces, quotation marks are added
+)INIT
+  .cursor = Zin
+  .zvars = '(zview zchar)'
+  .help = txt2csvh
+)PROC
+ &resp = .resp
+ VER (&ZIN,NB,DSNAME)
+ VER (&ZOUT,NB,DSNAME)
+ VER (&ZVIEW,LIST,B,V,N,&Z)
+*REXX(* ZCHAR ZVIEW ZC2 ZEDSMSG ZEDLMSG CSR)
+  if resp = 'END' then exit
+  parse value '' with null zedsmsg zedlmsg
+  if sysdsn(zin) /= 'OK' then do
+    zedlmsg = 'Input dataset error:' sysdsn(zin)
+    csr = 'ZIN'
+  end
+  if sysdsn(zout) = 'OK' then do
+    zedlmsg = 'Output dataset exists and must not. Specify a new' ,
+      'dataset name that does not exist.'
+    csr = 'ZOUT'
+  end
+  if zedlmsg = null then do
+    if zchar /= null
+    then zc2 = '/CSV "'zchar'"'
+    if zview /= null then do
+      if zview = 'B' then brview = 'BROWSE'
+      if zview = 'V' then brview = 'VIEW'
+      if zc2 /= null then zc2 = zc2 brview
+      if zc2 = null then zc2 = '/' brview
+    end
+  end
+*ENDREXX
+  if (&zedlmsg NE &Z)
+     .cursor = &csr
+     .msg = isrz001
+)END

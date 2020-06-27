@@ -1,0 +1,28 @@
+)ATTR DEFAULT(%+_)
+   %   TYPE(TEXT)  INTENS(HIGH) SKIP(ON)
+   _   TYPE(INPUT) INTENS(HIGH) CAPS(ON) JUST(LEFT) HILITE(USCORE)
+)BODY EXPAND(\\)
+%Tutorial+-\-\-(%Text-2-CSV+)-\-\-%Tutorial
+%Command ===>_ZCMD
++
+%TXT2CSV+is a utility to convert a sequential dataset that is column aligned
++into a Comma (or other user specified character) delimited sequential
++dataset that can then be processed using any number of workstation
++applications that process CSV files.
++
+%Options:
++
+ %Input Dataset:    +Must be an existing sequential dataset with data easily
+ +                   aligned in columns
+ %Output Dataset:   +Must be a new dataset that does not exist as it will be
+ +                   allocated. It will contain the input dataset in CSV format.
+ %CSV Character:    +The character that will be used to separate data in the
+ +                   CSV.  By default a comma but can be anything.
+ %Column Positions: +The column number where each column starts in the Input
+ +                   data. Prefix with a - to have that column data ignored
+ +                   If columns have blanks in the column then the data will
+ +                   be enclosed in double quotes - "AB CD".
+ %View:             +B to Browse, V to View, N for neither (default) report
++
+)PROC
+)END
